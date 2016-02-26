@@ -101,7 +101,7 @@ func WalkLimit(root string, walkFn filepath.WalkFunc, limit int) error {
 				return errors.New("kill received while walking")
 			default:
 				for _, d := range dirsToSkip {
-					if strings.Contains(p, d) {
+					if strings.HasPrefix(p, d) {
 						return nil
 					}
 				}
