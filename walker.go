@@ -15,6 +15,7 @@ const DefaultConcurrentWalks int = 100
 
 var dirsToSkip []string
 
+// SkipDir takes variable number of arguments, which are paths not to be walked
 func SkipDir(dirs ...string) {
 	dirsToSkip = dirs
 }
