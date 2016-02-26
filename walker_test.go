@@ -278,5 +278,44 @@ func TestPowerWalkError(t *testing.T) {
 			assert.True(t, v, k)
 		}
 	}
+}
 
+func TestSkipDir(t *testing.T) {
+
+	// max concurrency out
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	dirToSkip := fmt.Sprintf("%s/dirToSkip", testFiles)
+
+	// this time, let's make test dirs + one additional directory to skip
+	makeTestFiles(5, 10)
+	if err := os.MkdirAll(dirToSkip, 0777); err != nil {
+		panic(fmt.Sprintf("%s", err))
+	}
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/browserHistory.txt", dirToSkip), []byte("redtube.com"), 0777); err != nil {
+		panic(fmt.Sprintf("%s", err))
+	}
+	defer deleteTestFiles()
+
+	// declare directories to skip
+	//SkipDir(fmt.Sprintf("%s/dirToSkip", testFiles))
+
+	var seenLock sync.Mutex
+	seen := make(map[string]bool)
+	walkFunc := func(p string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			filename := path.Base(p)
+			seenLock.Lock()
+			defer seenLock.Unlock()
+			seen[filename] = true
+		}
+		return nil
+	}
+
+	assert.NoError(t, Walk(testFiles, walkFunc))
+
+	// check if file inside "dirToSkip" was ommited
+	assert.False(t, seen["browserHistory.txt"])
+
+	//log.Println(seen)
 }
