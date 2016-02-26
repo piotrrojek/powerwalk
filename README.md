@@ -26,4 +26,12 @@ powerwalk.WalkLimit(root string, walkFn filepath.WalkFunc, limit int) error
 
 The `WalkLimit` function does the same as `Walk`, except allows you to specify the number of files to concurrently walk using the `limit` argument.  The `limit` argument must be one or higher (i.e. `>0`).  Specificying a limit that's too high, causes unnecessary overhead so sensible numbers are encouraged but not enforced.
 
+### Omitting directories
+
+In order to skip some nested directories, please call `SkipDir` function with paths to directories to be omitted:
+
+```
+powerwalk.SkipDir(dir...string)
+```
+
 See the [godoc documentation](http://godoc.org/github.com/stretchr/powerwalk) for more information.

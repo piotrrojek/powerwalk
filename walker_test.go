@@ -314,7 +314,7 @@ func TestSkipDir(t *testing.T) {
 
 	assert.NoError(t, Walk(testFiles, walkFunc))
 
-	// check if file inside "dirToSkip" was ommited
+	// check if file inside "dirToSkip" was omitted
 	assert.False(t, seen["browserHistory.txt"])
 
 	//log.Println(seen)
