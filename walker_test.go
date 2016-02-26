@@ -285,7 +285,7 @@ func TestSkipDir(t *testing.T) {
 	// max concurrency out
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	dirToSkip := fmt.Sprintf("%s/dirToSkip", testFiles)
+	dirToSkip := "test_files/dirToSkip"
 
 	// this time, let's make test dirs + one additional directory to skip
 	makeTestFiles(5, 10)
@@ -298,7 +298,7 @@ func TestSkipDir(t *testing.T) {
 	defer deleteTestFiles()
 
 	// declare directories to skip
-	//SkipDir(fmt.Sprintf("%s/dirToSkip", testFiles))
+	SkipDir(dirToSkip)
 
 	var seenLock sync.Mutex
 	seen := make(map[string]bool)
@@ -316,6 +316,4 @@ func TestSkipDir(t *testing.T) {
 
 	// check if file inside "dirToSkip" was omitted
 	assert.False(t, seen["browserHistory.txt"])
-
-	//log.Println(seen)
 }

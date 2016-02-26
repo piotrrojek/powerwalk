@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -11,6 +12,12 @@ import (
 // same time when the Walk function is called.
 // To use a value other than this one, use the WalkLimit function.
 const DefaultConcurrentWalks int = 100
+
+var dirsToSkip []string
+
+func SkipDir(dirs ...string) {
+	dirsToSkip = dirs
+}
 
 // Walk walks the file tree rooted at root, calling walkFn for each file or
 // directory in the tree, including root. All errors that arise visiting files
@@ -92,6 +99,11 @@ func WalkLimit(root string, walkFn filepath.WalkFunc, limit int) error {
 				close(files)
 				return errors.New("kill received while walking")
 			default:
+				for _, d := range dirsToSkip {
+					if strings.Contains(p, d) {
+						return nil
+					}
+				}
 				filesWg.Add(1)
 				select {
 				case files <- &walkArgs{path: p, info: info, err: err}:
